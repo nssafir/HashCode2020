@@ -12,7 +12,7 @@ public class Cache {
   }
 
   public void addVideo(Video v) {
-    videos.append(v);
+    videos.add(v);
     memoryRemaining -= v.size;
   }
 }
