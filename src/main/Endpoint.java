@@ -7,17 +7,21 @@ public class Endpoint {
   public List<Request> requests;
   public Map<Cache, int> connections;
   public int identifier;
+  public int datacenterLatency;
   
-  public Endpoint(int identifier) {
+  public Endpoint(int identifier, int datacenterLatency) {
     requests = new ArrayList<>();
     connections = new HashMap<>();
     this.identifier = identifier;
+    this.datacenterLatency = datacenterLatency;
   }
 
   public void addRequest(Request r) {
     requests.add(r);
   }
   
-  public void addConnection(Cache c, int latency) {
+  public void addConnection(int latency, Cache c) {
     connections.put(c, latency);
+  }
+
 }
