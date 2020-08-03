@@ -1,3 +1,5 @@
+package main;
+
 public class Video {
   public int identifier;
   public int size;

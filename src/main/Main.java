@@ -12,46 +12,88 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+package main;
+
 import java.util.Scanner; 
-import java.util.ArrayList; 
+import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Scanner;
 
 public final class Main {
 
-  private final int videoAmt;
-  private final int endpointAmt;
-  private final int requestAmt;
-  private final int cacheAmt;
-  private final int cacheCapacity;
+  private int videoAmt;
+  private int endpointAmt;
+  private int requestAmt;
+  private int cacheAmt;
+  private int cacheCapacity;
+
+  private ArrayList<Video> videos = new ArrayList<Video>();
+  private ArrayList<Endpoint> endpoints = new ArrayList<Endpoint>();
+  private ArrayList<Cache> caches = new ArrayList<Cache>();
 
   public static void main(String args[]) {
-    ArrayList<Video> videos = new ArrayList<Video>();
-    ArrayList<Endpoint> endpoints = new ArrayList<Endpoint>();
-    Scanner s = new Scanner(System.in); 
+    String filename = args[0];
+    Main main = new Main();
+
+    main.parseData(filename);
+  }
+
+  public void parseData(String filename) {
+    Scanner s;
+    try {
+      InputStream is = Main.class.getResourceAsStream(filename); // aghh
+      s = new Scanner(is); // this doesn't work :(
+    } catch (Exception e) {
+      e.printStackTrace();
+      return;
+    }
+
     videoAmt = s.nextInt(); 
     endpointAmt = s.nextInt(); 
     requestAmt = s.nextInt(); 
     cacheAmt = s.nextInt(); 
-    cacheCapacity = s.nextInt(); 
+    cacheCapacity = s.nextInt();
 
-    for(int i = 0; i < videoAmt; i++){
-      videos.add(new Video(i, s.nextInt()))
+    // Create caches.
+    for (int identifier = 0; identifier < cacheAmt; identifier++) {
+      caches.add(new Cache(cacheCapacity, identifier));
     }
 
-    int endpointCounter = 0;
+    // Create videos.
+    for(int i = 0; i < videoAmt; i++){
+      videos.add(new Video(i, s.nextInt()));
+    }
+
+    // Create endpoints.
     for(int i = 0; i < endpointAmt; i++){
       int datacenterLatency = s.nextInt();
-      Endpoint temp = new Endpoint(endpointCounter, datacenterLatency);
-      int cache = s.nextInt();
-      if(endpointCounter < endpointAmt){
-        endpointCounter++;
+      Endpoint temp = new Endpoint(i, datacenterLatency);
+
+      int cachesToEndpoint = s.nextInt();
+      for (int j = 0; j < cachesToEndpoint; j++){
+        Cache cacheToAdd = caches.get(s.nextInt());
+        int cacheLatency = s.nextInt();
+        temp.connections.put(cacheToAdd, cacheLatency);
       }
 
-      for(int i = 0; i < cache; i++){
-        
-      }
+      endpoints.add(temp);
     }
 
+    // Create requests.
+    for (int i = 0; i < requestAmt; i++) {
+      int videoNum = s.nextInt();
+      int endpointNum = s.nextInt();
+      int numRequests = s.nextInt();
 
-    
+      Video requestedVideo = videos.get(videoNum);
+      Endpoint fromEndpoint = endpoints.get(endpointNum);
+
+      Request r = new Request(i, requestedVideo, numRequests, fromEndpoint);
+    }
+    s.close();
   }
 }

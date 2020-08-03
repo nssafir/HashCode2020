@@ -1,3 +1,5 @@
+package main;
+
 public class Request {
   public int identifier;
   public Video video;

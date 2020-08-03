@@ -1,3 +1,5 @@
+package main;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -5,7 +7,7 @@ import java.util.HashMap;
 
 public class Endpoint {
   public List<Request> requests;
-  public Map<Cache, int> connections;
+  public Map<Cache, Integer> connections;
   public int identifier;
   public int datacenterLatency;
   
