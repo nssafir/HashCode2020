@@ -5,10 +5,12 @@ public class Cache {
 
   public int memoryRemaining;
   public List<Video> videos;
+  public int identifier;
 
-  public Cache(int x) {
-    memoryRemaining = x;
+  public Cache(int memory, int identifier) {
+    memoryRemaining = memory;
     videos = new ArrayList<>();
+    this.identifier = identifier;
   }
 
   public void addVideo(Video v) {
