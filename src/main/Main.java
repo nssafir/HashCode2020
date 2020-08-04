@@ -22,6 +22,10 @@ import java.io.FileNotFoundException;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.io.PrintWriter;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 
 public final class Main {
 
@@ -35,16 +39,44 @@ public final class Main {
   private ArrayList<Endpoint> endpoints = new ArrayList<Endpoint>();
   private ArrayList<Cache> caches = new ArrayList<Cache>();
   private ArrayList<Request> requests = new ArrayList<Request>();
+  private Map<Cache, List<Video>> allCaches = new HashMap<>();
 
   public static void main(String args[]) {
     String filename = args[0];
     Main main = new Main();
-
     System.out.println("arg: " + filename); //test
     main.parseData(filename);
     System.out.println("End of parse function"); //test
-    main.printObjects();
+    //main.testOutput();
+
+    //main.printObjects();
+    //main.makeOutput("output.txt");
   }
+
+  public void testOutput() {
+    // test make output by populating allCaches
+    allCaches.put(caches.get(0), videos);
+    allCaches.put(caches.get(1), videos);
+  }
+
+  public void makeOutput(String filename) {
+    PrintWriter writer = null;
+    try {
+      writer = new PrintWriter(filename, "UTF-8");
+      writer.println(allCaches.size());
+      for (Cache c : allCaches.keySet()) {
+        writer.print(c.identifier + " ");
+        for (Video v : allCaches.get(c)) {
+          writer.print(v.identifier + " ");
+        }
+        writer.println(""); 
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    writer.close();
+  } 
 
   public void printObjects() {
     for (Video v : videos) {
