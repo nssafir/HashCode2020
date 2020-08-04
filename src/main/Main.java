@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Map;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Collections;
 
 import java.io.File;
@@ -44,7 +46,7 @@ public final class Main {
   private ArrayList<Cache> caches = new ArrayList<Cache>();
   private ArrayList<Request> requests = new ArrayList<Request>();
 
-  private Map<Integer, List<Video>> allCaches = new HashMap<>();
+  private Map<Integer, Set<Video>> allCaches = new HashMap<>();
 
   public static void main(String args[]) {
     String filename = args[0];
@@ -98,8 +100,8 @@ public final class Main {
         if (minCache != null) {
           minCache.addVideo(v);
           // add cache and video to allCaches
-          List<Video> cacheVideos = 
-                      allCaches.getOrDefault(minCache.identifier, new ArrayList<>());
+          Set<Video> cacheVideos = 
+                      allCaches.getOrDefault(minCache.identifier, new HashSet<>());
           cacheVideos.add(v);
           allCaches.put(minCache.identifier, cacheVideos);
         }
