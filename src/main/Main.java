@@ -34,6 +34,7 @@ public final class Main {
   private ArrayList<Video> videos = new ArrayList<Video>();
   private ArrayList<Endpoint> endpoints = new ArrayList<Endpoint>();
   private ArrayList<Cache> caches = new ArrayList<Cache>();
+  private ArrayList<Request> requests = new ArrayList<Request>();
 
   public static void main(String args[]) {
     String filename = args[0];
@@ -43,9 +44,9 @@ public final class Main {
   }
 
   public void parseData(String filename) {
-    Scanner s;
+    Scanner s;InputStream is = Main.class.getResourceAsStream(filename); // aghh
     try {
-      InputStream is = Main.class.getResourceAsStream(filename); // aghh
+      
       s = new Scanner(is); // this doesn't work :(
     } catch (Exception e) {
       e.printStackTrace();
@@ -93,6 +94,7 @@ public final class Main {
       Endpoint fromEndpoint = endpoints.get(endpointNum);
 
       Request r = new Request(i, requestedVideo, numRequests, fromEndpoint);
+      requests.add(r);
     }
     s.close();
   }
