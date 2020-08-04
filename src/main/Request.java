@@ -1,6 +1,6 @@
 package main;
 
-public class Request {
+public class Request implements Comparable<Request>{
   public int identifier;
   public Video video;
   public int number;
@@ -12,4 +12,11 @@ public class Request {
     this.number = number;
     this.endpoint = endpoint;
   } 
+
+  @Override 
+  public int compareTo(Request o) {
+    Integer number = this.number;
+    Integer otherNumber = o.number;
+    return number.compareTo(otherNumber);
+  }
 }

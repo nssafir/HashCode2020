@@ -16,12 +16,19 @@ package main;
 
 import java.util.Scanner; 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.Map;
+import java.util.List;
+import java.util.Collections;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Scanner;
+
+
 
 public final class Main {
 
@@ -36,6 +43,8 @@ public final class Main {
   private ArrayList<Cache> caches = new ArrayList<Cache>();
   private ArrayList<Request> requests = new ArrayList<Request>();
 
+  private Map<Cache, List<Video>> allCaches = new HashMap<>();
+
   public static void main(String args[]) {
     String filename = args[0];
     Main main = new Main();
@@ -44,6 +53,32 @@ public final class Main {
     main.parseData(filename);
     System.out.println("End of parse function"); //test
     main.printObjects();
+  }
+
+  public void calculate() {
+    // calculation function
+    // sort requests descending by size (maybe put in priority queue - need to make request class comparable by #)
+    PriorityQueue<Request> rQueue = new PriorityQueue<>(Collections.reverseOrder());
+    for (Request r : requests) {
+        Video v = r.video;
+        Map<Cache, Integer> caches = r.endpoint.connections; // caches connected to the endpoint of the request
+        // get the cache with the lowest latency and the space available for v
+        Cache minCache = null;
+        int minLatency = Integer.MAX_VALUE;
+        for (Map.Entry<Cache, Integer> entry : caches.entrySet()) { 
+            if (minLatency > entry.getValue() 
+                && entry.getKey().memoryRemaining >= v.size) {
+                minCache = entry.getKey();
+            }
+        }
+        // add that video to the cache server   (decreasing its available size)
+        minCache.addVideo(v);
+        // add cache and video to allCaches
+        List<Video> cacheVideos = 
+                    allCaches.getOrDefault(minCache, new ArrayList<>());
+        cacheVideos.add(v);
+        allCaches.put(minCache, cacheVideos);         
+    }
   }
 
   public void printObjects() {
