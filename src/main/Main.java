@@ -41,9 +41,45 @@ public final class Main {
     Main main = new Main();
 
     System.out.println("arg: " + filename); //test
-
     main.parseData(filename);
     System.out.println("End of parse function"); //test
+    main.printObjects();
+  }
+
+  public void printObjects() {
+    for (Video v : videos) {
+      System.out.println("Video " + v.identifier);
+      System.out.println("  Size: " + v.size);
+    }
+    for (Endpoint e : endpoints) {
+      System.out.println("Endpoint " +  e.identifier);
+      System.out.println("  Datacenter latency: " + e.datacenterLatency);
+      System.out.print("  Requests for videos ");
+      for (Request r : e.requests) {
+        System.out.print(r.identifier);       
+      }
+      System.out.println("");
+      System.out.print("  Cache/latency connections of: ");
+      for (Cache c : e.connections.keySet()){
+        System.out.print(c.identifier + "," + e.connections.get(c) + " ");
+      }
+      System.out.println("");
+    }
+    for (Cache c : caches) {
+      System.out.println("Cache " +  c.identifier);
+      System.out.println("  Memory Remaining : " + c.memoryRemaining);
+      System.out.print("  Contains videos ");
+      for (Video v : c.videos) {
+        System.out.print(v.identifier + " ");
+      }
+      System.out.println("");
+    }
+    for (Request r : requests) {
+      System.out.println("Request " +  r.identifier);
+      System.out.println("  Video is " + r.video.identifier);
+      System.out.println("  Number is " + r.number);
+      System.out.println("  Endpoint is " + r.endpoint.identifier);
+    }
   }
 
   public void parseData(String filename) {
@@ -55,50 +91,41 @@ public final class Main {
       e.printStackTrace();
       return;
     }
-
     videoAmt = s.nextInt(); 
     endpointAmt = s.nextInt(); 
     requestAmt = s.nextInt(); 
     cacheAmt = s.nextInt(); 
     cacheCapacity = s.nextInt();
-
     System.out.println(videoAmt+" "+endpointAmt+" "+requestAmt+" "+cacheAmt+" "+cacheCapacity); // test
-
     // Create caches.
     for (int identifier = 0; identifier < cacheAmt; identifier++) {
       caches.add(new Cache(cacheCapacity, identifier));
     }
-
     // Create videos.
     for(int i = 0; i < videoAmt; i++){
       videos.add(new Video(i, s.nextInt()));
     }
-
     // Create endpoints.
     for(int i = 0; i < endpointAmt; i++){
       int datacenterLatency = s.nextInt();
       Endpoint temp = new Endpoint(i, datacenterLatency);
-
       int cachesToEndpoint = s.nextInt();
       for (int j = 0; j < cachesToEndpoint; j++){
         Cache cacheToAdd = caches.get(s.nextInt());
         int cacheLatency = s.nextInt();
         temp.connections.put(cacheToAdd, cacheLatency);
       }
-
       endpoints.add(temp);
     }
-
     // Create requests.
     for (int i = 0; i < requestAmt; i++) {
       int videoNum = s.nextInt();
       int endpointNum = s.nextInt();
       int numRequests = s.nextInt();
-
       Video requestedVideo = videos.get(videoNum);
       Endpoint fromEndpoint = endpoints.get(endpointNum);
-
       Request r = new Request(i, requestedVideo, numRequests, fromEndpoint);
+      fromEndpoint.addRequest(r);
       requests.add(r);
     }
     s.close();
