@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
 
 
 
@@ -54,6 +55,25 @@ public final class Main {
     System.out.println("End of parse function"); //test
     main.printObjects();
   }
+
+  public void makeOutput(String filename) {
+    PrintWriter writer = null;
+    try {
+      writer = new PrintWriter(filename, "UTF-8");
+      writer.println(allCaches.size());
+      for (Cache c : allCaches.keySet()) {
+        writer.print(c.identifier + " ");
+        for (Video v : allCaches.get(c)) {
+          writer.print(v.identifier + " ");
+        }
+        writer.println(""); 
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    writer.close();
+  } 
 
   public void calculate() {
     // calculation function
