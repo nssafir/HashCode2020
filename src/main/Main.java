@@ -54,6 +54,8 @@ public final class Main {
     main.parseData(filename);
     System.out.println("End of parse function"); //test
     main.printObjects();
+    main.calculate();
+    main.makeOutput("output.txt");
   }
 
   public void makeOutput(String filename) {
@@ -89,15 +91,18 @@ public final class Main {
             if (minLatency > entry.getValue() 
                 && entry.getKey().memoryRemaining >= v.size) {
                 minCache = entry.getKey();
+                minLatency = entry.getValue();
             }
         }
         // add that video to the cache server   (decreasing its available size)
-        minCache.addVideo(v);
-        // add cache and video to allCaches
-        List<Video> cacheVideos = 
-                    allCaches.getOrDefault(minCache, new ArrayList<>());
-        cacheVideos.add(v);
-        allCaches.put(minCache, cacheVideos);         
+        if (minCache != null) {
+          minCache.addVideo(v);
+          // add cache and video to allCaches
+          List<Video> cacheVideos = 
+                      allCaches.getOrDefault(minCache, new ArrayList<>());
+          cacheVideos.add(v);
+          allCaches.put(minCache, cacheVideos);
+        }
     }
   }
 
