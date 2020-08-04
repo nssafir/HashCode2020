@@ -40,14 +40,17 @@ public final class Main {
     String filename = args[0];
     Main main = new Main();
 
+    System.out.println("arg: " + filename); //test
+
     main.parseData(filename);
+    System.out.println("End of parse function"); //test
   }
 
   public void parseData(String filename) {
-    Scanner s;InputStream is = Main.class.getResourceAsStream(filename); // aghh
+    Scanner s;
     try {
-      
-      s = new Scanner(is); // this doesn't work :(
+      InputStream input = getClass().getResourceAsStream(filename);
+      s = new Scanner(input); // this doesn't work :(
     } catch (Exception e) {
       e.printStackTrace();
       return;
@@ -58,6 +61,8 @@ public final class Main {
     requestAmt = s.nextInt(); 
     cacheAmt = s.nextInt(); 
     cacheCapacity = s.nextInt();
+
+    System.out.println(videoAmt+" "+endpointAmt+" "+requestAmt+" "+cacheAmt+" "+cacheCapacity); // test
 
     // Create caches.
     for (int identifier = 0; identifier < cacheAmt; identifier++) {
