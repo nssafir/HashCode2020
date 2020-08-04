@@ -44,7 +44,7 @@ public final class Main {
   private ArrayList<Cache> caches = new ArrayList<Cache>();
   private ArrayList<Request> requests = new ArrayList<Request>();
 
-  private Map<Cache, List<Video>> allCaches = new HashMap<>();
+  private Map<Integer, List<Video>> allCaches = new HashMap<>();
 
   public static void main(String args[]) {
     String filename = args[0];
@@ -63,9 +63,9 @@ public final class Main {
     try {
       writer = new PrintWriter(filename, "UTF-8");
       writer.println(allCaches.size());
-      for (Cache c : allCaches.keySet()) {
-        writer.print(c.identifier + " ");
-        for (Video v : allCaches.get(c)) {
+      for (Integer identifier : allCaches.keySet()) {
+        writer.print(identifier + " ");
+        for (Video v : allCaches.get(identifier)) {
           writer.print(v.identifier + " ");
         }
         writer.println(""); 
@@ -99,9 +99,9 @@ public final class Main {
           minCache.addVideo(v);
           // add cache and video to allCaches
           List<Video> cacheVideos = 
-                      allCaches.getOrDefault(minCache, new ArrayList<>());
+                      allCaches.getOrDefault(minCache.identifier, new ArrayList<>());
           cacheVideos.add(v);
-          allCaches.put(minCache, cacheVideos);
+          allCaches.put(minCache.identifier, cacheVideos);
         }
     }
   }
